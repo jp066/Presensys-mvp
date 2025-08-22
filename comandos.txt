@@ -1,0 +1,55 @@
+# Lista de comandos úteis para aplicações Express
+
+# 1. Inicializar um novo projeto Node.js
+npm init -y
+
+# 2. Instalar o Express
+npm install express
+
+# 3. Criar um arquivo principal (ex: app.js)
+touch app.js
+
+# 4. Rodar a aplicação
+node app.js
+
+# 5. Instalar o Nodemon para reiniciar automaticamente
+npm install --save-dev nodemon
+
+# 6. Rodar a aplicação com Nodemon
+npx nodemon app.js
+
+# 7. Instalar body-parser (para ler dados do body)
+npm install body-parser
+
+# 8. Instalar CORS (para habilitar requisições de outros domínios)
+npm install cors
+
+# 9. Instalar dotenv (para variáveis de ambiente)
+npm install dotenv
+
+# 10. Instalar ejs (template engine)
+npm install ejs
+
+# 11. Instalar mongoose (para MongoDB)
+npm install mongoose
+
+# 12. Instalar sequelize (para bancos SQL)
+npm install sequelize
+
+# 13. Instalar morgan (logger de requisições)
+npm install morgan
+
+# 14. Instalar helmet (segurança)
+npm install helmet
+
+# 15. Instalar jsonwebtoken (autenticação JWT)
+npm install jsonwebtoken
+
+# 16. Instalar bcrypt (hash de senhas)
+npm install bcrypt
+
+# 17. Instalar supertest e jest (testes)
+npm install --save-dev supertest jest
+
+# 18. Instalar express-validator (validação de dados)
+npm install express-validator

@@ -25,7 +25,7 @@ app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  next(createError(404)); // Not Found
 });
 
 app.use(middlewareError); // o aplicativo usa o middleware de erro para todas as rotas

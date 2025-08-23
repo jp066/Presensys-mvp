@@ -4,6 +4,6 @@ const validateMiddleware = require('../middlewares/validate.middleware');
 const userController = require('../controllers/user.controller');
 
 router.get('/', userController.getUsers);
-router.post('/', validateMiddleware, userController.createUser);
+router.get('/:id', userController.getUserById);
 
 module.exports = router;

@@ -44,7 +44,6 @@ function execSql(connection, sql, params = null) {
       for (const key in params) {
         if (params.hasOwnProperty(key)) {
           const param = params[key];
-          // Remove o @ do nome do parâmetro ao adicionar
           request.addParameter(key.replace(/^@/, ''), param.type, param.value);
         }
       }

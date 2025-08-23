@@ -15,19 +15,18 @@ async function getUsers() {
     }
 }
 
-async function createUser(params) {
+async function getUserById(id) {
     try {
         const connection = await connectToDB();
-        const sql = await execSql(connection, 'INSERT INTO users (name, email, password_hash) VALUES (@name, @email, @password_hash)', {
-            '@name': { type: TYPES.NVarChar, value: params.name },
-            '@email': { type: TYPES.NVarChar, value: params.email },
-            '@password_hash': { type: TYPES.NVarChar, value: params.password_hash }
-        });
-        console.log('User created:', sql);
+        const user = await execSql(connection, 'SELECT * FROM users WHERE id = @id', {
+            '@id': { type: TYPES.NVarChar, value: id }
+        }); // evitar usar id: id como parâmetro. usar sempre parametro do tedious.
         connection.close();
+        return user;
     } catch (err) {
         console.error('Erro:', err);
+        throw err;
     }
 }
 
-module.exports = { getUsers, createUser };
+module.exports = { getUsers, getUserById };

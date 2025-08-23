@@ -1,26 +1,25 @@
+require("dotenv-safe").config();
+const jwt = require("jsonwebtoken");
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const middlewareError = require('./src/middlewares/error.middleware');
-var app = express();
-
+const app = express();
 require('dotenv').config();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+const usersRouter = require('./src/routes/user.routes');
+const authRouters = require('./src/routes/auth.routes');
+app.use('/auth', authRouters);
+app.use('/users', usersRouter);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// rotas de usuários
-const usersRouter = require('./src/routes/user.routes');
-app.use('/users', usersRouter);
-
 app.use(function (req, res, next) {
   next(createError(404)); // Not Found
 }); // middleware para tratar erros 404
-
 app.use(middlewareError); // o aplicativo usa o middleware de erro para todas as rotas
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

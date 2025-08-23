@@ -1,5 +1,6 @@
 const SignUp = require("../auth/auth.service");
 const SignIn = require("../auth/auth.service");
+const Logout = require("../auth/auth.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -7,13 +8,14 @@ async function createUser(req, res) {
   try {
     const { name, email, password } = req.body; // extraindo os dados do corpo da requisição
     const password_hash = await bcrypt.hash(password, 10);
-    await SignUp.createUser({ name, email, password_hash });
+    await SignUp.createUser({ name, email, password_hash }); // 
     res.status(201).json({ message: "Usuario criado" });
   } catch (err) {
     console.error("Erro:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
 
 async function signIn(req, res) {
   try {
@@ -36,7 +38,7 @@ async function signIn(req, res) {
           return res.status(200).json({ token: tokenJwt }); // isso é o payload do JWT
         }
       }
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Credenciais inválidas" });
     }
   } catch (err) {
     console.error("Erro:", err);

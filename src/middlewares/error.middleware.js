@@ -30,5 +30,6 @@ function errorMiddleware(err, req, res, next) {
             error: {}
         });
     }
+    next();
 }
 module.exports = errorMiddleware;

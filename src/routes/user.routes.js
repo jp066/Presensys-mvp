@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const validateMiddleware = require('../middlewares/validate.middleware');
+const userController = require('../controllers/user.controller');
 
-
-router.get('/', /*authMiddleware,*/ (req, res) => {
-    res.json({ message: 'GET request to /users' });
-}); // exemplo de rota protegida
+router.get('/', userController.getUsers);
+router.post('/', validateMiddleware, userController.createUser);
 
 module.exports = router;

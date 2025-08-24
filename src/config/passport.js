@@ -1,4 +1,5 @@
 const { Strategy, ExtractJwt } = require('passport-jwt');
+const passport = require('passport');
 const { connectToDB, execSql } = require('../config/db');
 const userService = require('../services/user.service');
 const { Request, TYPES } = require('tedious');
@@ -23,5 +24,4 @@ async function jwtVerify(payload, done) {
 }
 
 const jwtStrategy = new Strategy(jwtOptions, jwtVerify);
-
-module.exports = { jwtStrategy };
+passport.use('jwt', jwtStrategy);

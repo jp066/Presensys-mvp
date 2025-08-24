@@ -6,11 +6,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const middlewareError = require('./src/middlewares/error.middleware');
+const passport = require('passport');
+require('./src/config/passport');
 const app = express();
 require('dotenv').config();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
 const usersRouter = require('./src/routes/user.routes');
 const authRouters = require('./src/routes/auth.routes');
 app.use('/auth', authRouters);
@@ -31,9 +34,8 @@ app.use(function (err, req, res, next) {
     error: req.app.get('env') === 'development' ? err : {}
   });
 });
-
 const port = process.env.PORT;
 app.listen(port, () => { // o listen serve para iniciar o servidor
-    console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
 module.exports = app;

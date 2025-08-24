@@ -23,20 +23,24 @@ async function getUserById(req, res) {
   }
 }
 
+
 async function myProfile(req, res) {
   try {
-    const me = await UserService.getUserById(req.user.id);
-    /*um usuario, na sua aba de perfil, além de suas informações pessoais,
-    deve ter acesso a seus grupos e listas de compras ja feitas*/
-    if (!me) {
+    // Usa o id do usuário autenticado, não req.params.id
+    const userId = req.user && req.user.id;
+    if (!userId) {
       return res.status(401).json({ error: "Login expirado, entre novamente!" });
+    }
+    const me = await UserService.myProfile(userId);
+    if (!me) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
     res.json(me);
   } catch (err) {
     console.error("Erro:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+} 
 
 module.exports = {
   getUsers,

@@ -1,6 +1,6 @@
-const SignUp = require("../auth/auth.service");
-const SignIn = require("../auth/auth.service");
-const Logout = require("../auth/auth.service");
+const e = require("express");
+const AuthService = require("../auth/auth.service");
+const Logout = require("../auth/logout.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -8,7 +8,7 @@ async function createUser(req, res) {
   try {
     const { name, email, password } = req.body; // extraindo os dados do corpo da requisição
     const password_hash = await bcrypt.hash(password, 10);
-    await SignUp.createUser({ name, email, password_hash }); // 
+    await AuthService.createUser({ name, email, password_hash }); //
     res.status(201).json({ message: "Usuario criado" });
   } catch (err) {
     console.error("Erro:", err);
@@ -16,14 +16,13 @@ async function createUser(req, res) {
   }
 }
 
-
 async function signIn(req, res) {
   try {
     if ((req.body.name || req.body.email) && req.body.password) {
       // verifica se o nome ou email e a senha estão presentes
       const { email, name, password } = req.body;
       // Busca o usuário pelo email ou nome (sem verificar senha ainda)
-      const user = await SignIn.signInUserWithJwt({ email, name });
+      const user = await AuthService.signInUserWithJwt({ email, name });
       if (user && user.password_hash) {
         // Compara a senha fornecida com o hash salvo
         const isMatch = await bcrypt.compare(password, user.password_hash); // Compara a senha
@@ -35,7 +34,24 @@ async function signIn(req, res) {
               expiresIn: parseInt(process.env.JWT_EXPIRES),
             }
           );
-          return res.status(200).json({ token: tokenJwt }); // isso é o payload do JWT
+          const refreshToken = jwt.sign(
+            { id: user.id, name: user.name, email: user.email },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: parseInt(process.env.JWT_REFRESH_EXPIRES),
+            }
+          );
+          const expiracao = new Date(
+            Date.now() + parseInt(process.env.JWT_REFRESH_EXPIRES) * 1000
+          );
+          await AuthService.saveRefreshToken(user.id, refreshToken, expiracao); // salva o refresh token no banco de dados
+          return res
+            .status(200)
+            .json({
+              token: tokenJwt,
+              refreshToken,
+              expiresIn: parseInt(process.env.JWT_REFRESH_EXPIRES),
+            }); // isso é o payload do JWT
         }
       }
       return res.status(401).json({ error: "Credenciais inválidas" });
@@ -46,4 +62,47 @@ async function signIn(req, res) {
   }
 }
 
-module.exports = { createUser, signIn };
+async function refreshToken(req, res) {
+  try {
+    const { refreshToken } = req.body; // pega o refreshToken do cabeçalho da requisição
+    if (!refreshToken) {
+      return res.status(400).json({ error: "Refresh token é obrigatório" });
+    }
+    const isBlacklisted = await Logout.isTokenBlacklisted(refreshToken);
+    if (isBlacklisted) {
+      return res.status(401).json({ error: "Refresh token inválido" });
+    }
+    const payload = jwt.verify(refreshToken, process.env.JWT_SECRET); // verifica o refresh token
+    const newAcessToken = jwt.sign(
+      { id: payload.id, name: payload.name, email: payload.email },
+      process.env.JWT_SECRET,
+      { expiresIn: parseInt(process.env.JWT_EXPIRES) }
+    );
+    res.status(200).json({ token: newAcessToken });
+  } catch (err) {
+    console.error("Erro refreshToken:", err);
+    res.status(403).json({ error: "Refresh token inválido ou expirado" });
+  }
+}
+
+async function logoutUser(req, res) {
+  try {
+    const { userId, refreshToken } = req.body;
+    console.log("Usuário:", userId);
+    console.log("Refresh Token:", refreshToken);
+    if (!userId || !refreshToken) {
+      console.error("Usuário e refreshToken são obrigatórios");
+      return res
+        .status(400)
+        .json({ error: "Usuário e refreshToken são obrigatórios" });
+    }
+    await Logout.logout(userId, refreshToken); // chama a função de logout
+    res.status(200).json({ message: "Logout efetuado com sucesso" });
+    console.log("Logout efetuado com sucesso");
+  } catch (err) {
+    console.error("Erro:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+module.exports = { createUser, signIn, refreshToken, logoutUser };

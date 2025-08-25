@@ -9,9 +9,6 @@ Backend para o sistema ShopLink, desenvolvido em Node.js com Express, autentica�
 - [Configuração](#configuração)
 - [Scripts](#scripts)
 - [Estrutura de Pastas](#estrutura-de-pastas)
-- [Principais Funcionalidades](#principais-funcionalidades)
-- [Rotas](#rotas)
-- [Licença](#licença)
 
 ## Tecnologias
 

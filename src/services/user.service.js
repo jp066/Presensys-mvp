@@ -1,5 +1,5 @@
 const { connectToDB, execSql } = require('../config/db');
-const { Request, TYPES } = require('tedious');
+const { TYPES } = require('tedious');
 
 async function getUsers() {
     try {

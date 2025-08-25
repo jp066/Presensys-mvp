@@ -53,3 +53,6 @@ npm install --save-dev supertest jest
 
 # 18. Instalar express-validator (validação de dados)
 npm install express-validator
+
+# 19. Debug Express'
+$env:DEBUG = "express:*"; node app.js

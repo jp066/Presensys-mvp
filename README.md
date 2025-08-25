@@ -23,9 +23,14 @@ Backend para o sistema ShopLink, desenvolvido em Node.js com Express, autentica�
 - bcrypt
 - Morgan
 
-## Instalação
 
-1. Clone o repositório:
-   ```sh
-   git clone https://github.com/seu-usuario/shoplink-backend.git
-   cd shoplink-backend
+## Estrutura de Pastas
+src/
+  auth/           # Serviços de autenticação e logout
+  config/         # Configurações de banco e passport
+  controllers/    # Lógica das rotas
+  middlewares/    # Middlewares globais e de validação
+  routes/         # Definição das rotas
+  services/       # Serviços de acesso ao banco, logicas de negocio etc
+  utils/          # Utilitários e classes de erro
+public/           # Arquivos estáticos (CSS, imagens)

@@ -26,7 +26,7 @@ async function getGroups(req, res) {
 }
 
 async function sendGroupInvite(req, res) {
-
+  
 }
 
 module.exports = { createGroups, getGroups };

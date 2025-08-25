@@ -25,6 +25,7 @@ Backend para o sistema ShopLink, desenvolvido em Node.js com Express, autentica�
 
 
 ## Estrutura de Pastas
+```sh
 src/
   auth/           # Serviços de autenticação e logout
   config/         # Configurações de banco e passport
